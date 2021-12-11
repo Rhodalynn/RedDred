@@ -17,7 +17,7 @@ if (isset($input['getPublicServices'])) {
    
 }
 
-//The endpoint for creating new public service
+//The endpoint for creating new public service.
 if (isset($input['createPublicService'])) {
     $publicServiceData = $input['createPublicService'];
 
@@ -29,4 +29,11 @@ if (isset($input['createPublicService'])) {
 
     echo json_encode(createPublicService($serviceID,$psname,$pshead, $hqlocation));
    
+}
+
+//The endpoint for deleting public service.
+if (isset($input['deletePublicService'])) {
+    $deletePublicServiceId = $input['deletePublicService'];
+    echo json_encode(deletePublicService($deletePublicServiceId));
+
 }
