@@ -1,4 +1,5 @@
-export function defaultData() {
+function publicServicesDataAlpineWrapper() {
+  // DEFAULT
   function getThemeFromLocalStorage() {
     // if user already changed the theme, use it
     if (window.localStorage.getItem("dark")) {
@@ -17,6 +18,7 @@ export function defaultData() {
   }
 
   return {
+    //   DEFUALT
     dark: getThemeFromLocalStorage(),
     toggleTheme() {
       this.dark = !this.dark;
@@ -61,5 +63,38 @@ export function defaultData() {
       this.isModalOpen = false;
       this.trapCleanup();
     },
+    // end of DEFAULT
+
+    // CURRENT USER
+    currentUser: JSON.parse(localStorage.getItem("userData")),
+    // end of CURRENT USER
+
+    // PUBLIC SERVICE
+    publicServiceData: {},
+    publicServices: [],
+    async getPublicServices() {
+      // Send a request to the server to login user.
+      const publicServicesResult = await axios.post(
+        "./../../server/controllers/publicServices/endpoint.publicServices.php",
+        {
+          getPublicServices: "all",
+        }
+      );
+
+      console.log(publicServicesResult);
+
+      // If the login fails, show the error message
+      if (!publicServicesResult.data.success)
+        return (this.publicServicesErrorMessage =
+          publicServicesResult.data.error.message);
+
+      console.log(publicServicesResult.data);
+
+      //   Updates public services data object with data from server
+      this.publicServiceData = publicServicesResult.data.data;
+    },
+
+    createNewPublicService() {},
+    // end of PUBLIC SERVICE
   };
 }

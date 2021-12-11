@@ -7,8 +7,11 @@ function loginDataAlpineWrapper() {
       email: "",
       password: document.getElementById("passwordField").value,
     },
-    storeUserData() {
-      localStorage.setItem("userData", this.userData);
+    storeUserData(userData) {
+      localStorage.setItem("userData", JSON.stringify(userData));
+    },
+    getUserData(){
+      this.userData = JSON.parse(localStorage.getItem("userData"))
     },
     clearErrors() {
       this.isPasswordValid = null;
@@ -19,23 +22,23 @@ function loginDataAlpineWrapper() {
       // Clear all errors
       this.clearErrors();
 
-      this.isEmailValid = true;
-      this.isPasswordValid = false;
-
+      
       // Send a request to the server to login user.
-      const loginResult = await axios({
-        method: "get",
-        url: "https://jsonplaceholder.typicode.com/todos/1",
-      });
+      const loginResult = await axios.post("./../../server/controllers/auth/endpoint.auth.php", {
+          "login" : this.userData
+        });
+
+
 
       // If the login fails, show the error message
-      if (!loginResult.success)
-        return (this.loginErrorMessage = "Some error message.");
+      if (!loginResult.data.success)
+        return (this.loginErrorMessage = loginResult.data.error.message);
 
       // else, store user data and move to the dashboard
-      this.storeUserData();
+      this.storeUserData(loginResult.data.data);
 
-      location.href = "/";
+
+      location.href = "./../";
     },
   };
 }

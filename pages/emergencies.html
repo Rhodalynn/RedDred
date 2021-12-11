@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+<html :class="{ 'theme-dark': dark }" x-data="emergencysDataAlpineWrapper()" x-init = "getEmergencies()" lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -9,7 +9,8 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-    <script src="../assets/js/init-alpine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../assets/js/controllers/emergency.controller.alpine.js"></script>
  
     <!-- You need focus-trap.js to make the modal accessible -->
     <script src="../assets/js/focus-trap.js" defer></script>
@@ -184,8 +185,8 @@
                                 @click="toggleProfileMenu" @keydown.escape="closeProfileMenu" aria-label="Account"
                                 aria-haspopup="true">
                                 <img class="object-cover w-8 h-8 rounded-full"
-                                    src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
-                                    alt="" aria-hidden="true" />
+                                x-bind:src="'https://avatars.dicebear.com/api/initials/' + currentUser.fname + ' ' +currentUser.lname+ '.svg'"
+                                alt="" aria-hidden="true" />
                             </button>
                             <template x-if="isProfileMenuOpen">
                                 <ul x-transition:leave="transition ease-in duration-150"
@@ -254,30 +255,39 @@
                                     <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                                         <th class="px-4 py-3">Contact</th>
+                                        <th class="px-4 py-3">Description</th>
                                         <th class="px-4 py-3">Public Service Required</th>
                                         <th class="px-4 py-3">Status</th>
                                         <th class="px-4 py-3">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                                    <tr class="text-gray-700 dark:text-gray-400">
+                                    <template x-for="emergency in emergencies">
+                                    <tr class="text-gray-700 dark:text-gray-400" >
                                         <td class="px-4 py-3">
                                             <div class="flex items-center text-sm">
                                                 <!-- Avatar with inset shadow -->
                                                 <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
                                                     <img class="object-cover w-full h-full rounded-full"
-                                                        src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                                                        alt="" loading="lazy" />
+                                                    x-bind:src="'https://avatars.dicebear.com/api/identicon/' + emergency.user_ID + '.svg'"
+                                                    alt="" loading="lazy" />
                                                     <div class="absolute inset-0 rounded-full shadow-inner"
                                                         aria-hidden="true"></div>
                                                 </div>
-                                                <div>
-                                                    <p class="font-semibold">Hans Burger</p>
-                                                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                                                <div >
+                                                    <p class="font-semibold" x-text = "emergency.user_ID">Hans Burger</p>
+                                                    <p class="text-xs text-gray-600 dark:text-gray-400"x-text = "emergency.location">
                                                         Location
                                                     </p>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm">
+                                            <span
+                                            x-text = "emergency.description"
+                                                class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100">
+                                                Description
+                                            </span>
                                         </td>
                                         <td class="px-4 py-3 text-sm">
                                             <span
@@ -287,96 +297,21 @@
                                         </td>
                                         <td class="px-4 py-3 text-xs">
                                             <span
+                                            x-text = "emergency.emg_status"
                                                 class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
                                                 Approved
                                             </span>
                                         </td>
-                                        <td class="px-4 py-3 text-sm">
+                                        <td class="px-4 py-3 text-sm" x-text = "emergency.issue_date">
                                             6/10/2020
                                         </td>
                                     </tr>
-
+                                </template>
 
                                 </tbody>
                             </table>
                         </div>
-                        <div
-                            class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
-                            <span class="flex items-center col-span-3">
-                                Showing 21-30 of 100
-                            </span>
-                            <span class="col-span-2"></span>
-                            <!-- Pagination -->
-                            <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                                <nav aria-label="Table navigation">
-                                    <ul class="inline-flex items-center">
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                                                aria-label="Previous">
-                                                <svg aria-hidden="true" class="w-4 h-4 fill-current"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                                        clip-rule="evenodd" fill-rule="evenodd"></path>
-                                                </svg>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                                                1
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                                                2
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
-                                                3
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                                                4
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <span class="px-3 py-1">...</span>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                                                8
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
-                                                9
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                                                aria-label="Next">
-                                                <svg class="w-4 h-4 fill-current" aria-hidden="true"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                                        clip-rule="evenodd" fill-rule="evenodd"></path>
-                                                </svg>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </span>
-                        </div>
+                        <div class = "mt-16"></div>
                     </div>
 
 
@@ -417,28 +352,34 @@
                     Add New Emergency
                 </p>
     
-                <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Title</span>
-                    <input
-                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                        placeholder="Jane">
-                </label>
+               
     
                 <label class="block text-sm">
                     <span class="text-gray-700 dark:text-gray-400">Description</span>
                     <input
+                        x-model = "emergencyData.description"
                         class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                         placeholder="What happened?"></input>
+                        
+                </label>
+
+                <label class="block text-sm">
+                    <span class="text-gray-700 dark:text-gray-400">Location</span>
+                    <input
+                    x-model = "emergencyData.location"
+                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                        placeholder="Where did this happen?"></input>
                         
                 </label>
     
                 <label class="block mt-4 text-sm">
                     <span class="text-gray-700 dark:text-gray-400">
-                        Level
+                        Emergency Status
                     </span>
                     <select
+                    x-model = "emergencyData.emergencyStatus"
                         class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
-                        <option>Highly Important</option>
+                        <option>Critical</option>
                         <option>Lowest Priority</option>
                     </select>
                 </label>
@@ -452,6 +393,7 @@
                     Cancel
                 </button>
                 <button
+                @click = "createNewEmergency()"
                     class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:w-auto sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
                     Create New Emergency
                 </button>
