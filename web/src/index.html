@@ -2,7 +2,7 @@
 
 
 <!DOCTYPE html>
-<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+<html :class="{ 'theme-dark': dark }" x-data="defaultData()" x-init = "load()" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,6 +16,7 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./assets/js/init-alpine.js"></script>
     <script src="./assets/js/controllers/user.controller.alpine.js"></script>
   </head>
@@ -373,7 +374,7 @@
           </div>
         </header>
         <main class="h-full overflow-y-auto">
-          <div class="container px-6 mx-auto grid">
+          <div class="container px-6 mx-auto grid" x-init = "getEmergencies()">
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
@@ -403,8 +404,9 @@
                   </p>
                   <p
                     class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                    x-text = "emergencies.length"
                   >
-                    0
+                    2
                   </p>
                 </div>
               </div>
