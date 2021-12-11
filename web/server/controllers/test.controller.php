@@ -14,7 +14,7 @@ include __DIR__ .'/responseTeams/db.responseTeams.php';
 
 //print_r(signUp("Tay", "Blue", "tayblue@gmail.com", "tAy*56B7"));
 
-print_r(getAllUsers());
+//print_r(getAllUsers());
 
 //print_r(createEmergency("F900","111","critical", "Gas explosion", "2021-04-30","12:30 pm", "Linc.estates Hs 21", "Sakumono-Accra"));
 
@@ -31,3 +31,5 @@ print_r(getAllUsers());
 //print_r(createRespondentTeam("MS07", "Falcon"));
 
 //print_r(getAllRespondentTeams());
+
+print_r(deletePublicService("61b4be2131a16"));

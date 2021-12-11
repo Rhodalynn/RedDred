@@ -58,3 +58,15 @@ function getAllPublicServices(){
 
 }
 
+function deletePublicService($service_ID){
+    global $conn;
+      //Delete emergency from database
+      $sql =  "DELETE FROM public_service WHERE public_service.service_ID = '$service_ID' ";
+      
+  
+      if (mysqli_query($conn, $sql)) {
+        return array("success" => true, "data" =>  $service_ID, "message" => "Public service successfully deleted.");
+      } else 
+        return array("success" => false, "error" => array("message" => "Error: " . $sql . "<br>" . mysqli_error($conn) ));
+  
+  }
