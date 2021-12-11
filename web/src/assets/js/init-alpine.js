@@ -137,6 +137,7 @@ function defaultData() {
     },
 
     async load() {
+      if(this.currentUser == null || this.currentUser == undefined) return location.href = './pages/login.html';
       await this.getEmergencies();
       await this.getEmergencyTeams();
       await this.getPublicServices();
