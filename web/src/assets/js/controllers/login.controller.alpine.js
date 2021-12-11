@@ -94,8 +94,10 @@ function loginDataAlpineWrapper() {
       // else, store user data and move to the dashboard
       this.storeUserData(loginResult.data.data);
 
+      if(loginResult.data.data.role == 1) return location.href = "./../";
 
-      location.href = "./../";
+        
+      location.href = "./user_emergency.html";
     },
 
     async getAllUsers() {

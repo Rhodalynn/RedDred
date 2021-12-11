@@ -63,12 +63,13 @@ function defaultData() {
     },
 
     // DASHBOARD
+    currentUser: JSON.parse(localStorage.getItem("userData")),
     emergencies: [],
     emergencyServiceErrorMessage: "",
     async getEmergencies() {
       // Send a request to the server to get all emergencies.
       const emergenciesResult = await axios.post(
-        "./../../server/controllers/emergency/endpoint.emergency.php",
+        "./../server/controllers/emergency/endpoint.emergency.php",
         {
           getEmergencies: "all",
         }
@@ -92,7 +93,7 @@ function defaultData() {
     async getPublicServices() {
       // Send a request to the server to login user.
       const publicServicesResult = await axios.post(
-        "./../../server/controllers/publicServices/endpoint.publicServices.php",
+        "./../server/controllers/publicServices/endpoint.publicServices.php",
         {
           getPublicServices: "all",
         }
@@ -116,7 +117,7 @@ function defaultData() {
     async getEmergencyTeams() {
       // Send a request to the server to get all emergencies.
       const emergencyResponseResult = await axios.post(
-        "./../../server/controllers/responseTeams/endpoint.responseTeams.php",
+        "./../server/controllers/responseTeams/endpoint.responseTeams.php",
         {
           getEmergencyResponseTeams: "all",
         }
