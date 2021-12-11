@@ -1,0 +1,14 @@
+<?php declare(strict_types=1);
+use PHPUnit\Framework\TestCase;
+
+final class DirectoryExistsTest extends TestCase
+{
+    public function testFailure(): void
+    {
+        $this->assertDirectoryExists('web');
+
+        $this->assertDirectoryExists('web/server');
+
+        $this->assertDirectoryExists('web/server/controllers');
+    }
+}
