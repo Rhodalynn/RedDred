@@ -1,4 +1,4 @@
-function userDataAlpineWrapper() {
+function emergencyResponseDataAlpineWrapper() {
   // DEFAULT
   function getThemeFromLocalStorage() {
     // if user already changed the theme, use it
@@ -69,52 +69,55 @@ function userDataAlpineWrapper() {
     currentUser: JSON.parse(localStorage.getItem("userData")),
     // end of CURRENT USER
 
-    // USER
-    userData: {
-      email: "",
-      password: document.getElementById("passwordField").value,
-      fname: "",
-      lname: "",
-    },
-    users: [],
-    userErrorMessage: "",
-    async getUsers() {
-      // Send a request to the server to login user.
-      const usersResult = await axios.post(
-        "./../../server/controllers/auth/endpoint.auth.php",
+    // EMERGENCY
+    emergencyResponseData: {},
+    emergencyResponseTeams: [],
+    emergencyResponseErrorMessage: "",
+    async getEmergencyTeams() {
+      // Send a request to the server to get all emergencies.
+      const emergencyResponseResult = await axios.post(
+        "./../../server/controllers/emergency/endpoint.emergency.php",
         {
-          getUsers: "all",
+          getEmergencyResponseTeams: "all",
         }
       );
 
-      console.log(usersResult);
+      console.log(emergencyResponseResult);
 
       // If  fails, show the error message
-      if (!usersResult.data.success)
-        return (this.userErrorMessage = usersResult.data.error.message);
+      if (!emergencyResponseResult.data.success)
+        return (this.emergencyResponseErrorMessage =
+          emergencyResponseResult.data.error.message);
 
-      console.log(usersResult.data);
+      console.log(emergencyResponseResult.data);
 
-      //   Updates public services data object with data from server
-      this.users = usersResult.data.data;
+      //   Updates emergencies response team data object with data from server
+      this.emergencyResponseTeams = emergencyResponseResult.data.data;
     },
 
-    async signup() {
-      // Send a request to the server to signup user.
-      const signupResult = await axios.post(
-        "./../../server/controllers/auth/endpoint.auth.php",
+    async createNewEmergencyResponseTeam() {
+      const emergencyResponseTeamResult = await axios.post(
+        "./../../server/controllers/emergency/endpoint.emergency.php",
         {
-          signup: this.userData,
+          createEmergencyResponseTeam: {
+            ...{ userId: this.currentUser.user_ID },
+            ...this.emergencyData,
+          },
         }
       );
 
-      // If the login fails, show the error message
-      if (!signupResult.data.success)
-        return (this.signupErrorMessage = signupResult.data.error.message);
+      // If failed throw error
+      if (!emergencyResponseTeamResult.data.success) {
+        console.log(emergencyResponseTeamResult.data);
+        return (this.emergencyResponseErrorMessage =
+          emergencyResponseTeamResult.data.error.message);
+      }
 
-      // Successful
+      // If all is successful
+      console.log("Successfully created new emergency response team!");
+
       this.closeModal();
     },
-    // end of USER
+    // end of EMERGENCIES
   };
 }
